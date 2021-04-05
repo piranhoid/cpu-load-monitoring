@@ -2,30 +2,34 @@ import React from 'react';
 
 import useSystemInfo from '../../contexts/systemInfo';
 import Chart from '../Chart/Chart';
+import ThresholdIncidentList from '../ThresholdIncidentList/ThresholdIncidentList';
 
 const Dashboard = () => {
   const {
     loadAverage,
     isExceedingLimit,
-    tresholdIncidentList,
   } = useSystemInfo();
 
   return (
-    <div>
-      <div className="text-green-600 items-center justify-center text-4xl flex flex-col">
-        {loadAverage ?? '--'} {isExceedingLimit ? '🔥' : '👌🏻'}
+    <div className="w-full h-full flex flex-col px-12 py-24">
+      <div className="flex-1 flex flex-row justify-center">
+        <div className="text-4xl text-center flex items-center justify-center">
+          <div>
+            <div>
+              CPU Load Average
+          </div>
+            <div className="text-green-600 pt-4">
+              {loadAverage ?? '--'} {isExceedingLimit ? '🔥' : '👌🏻'}
+            </div>
+          </div>
+        </div>
+        <div className="pl-12">
+          <Chart />
+        </div>
       </div>
-      <Chart />
-      <ul>
-        {tresholdIncidentList.map((d, index) => {
-          return (
-            <li key={index}>
-              {d.isExceedingLimit ? '🔥' : '👌🏻'} - {d.lastValue} -{' '}
-              {d.date.toLocaleDateString()}{' '}
-            </li>
-          );
-        })}
-      </ul>
+      <div className="flex-1 mt-12 border-4">
+        <ThresholdIncidentList />
+      </div>
     </div>
   );
 };

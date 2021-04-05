@@ -8,7 +8,7 @@ export interface AverageListItem {
   value: number;
 }
 
-export interface IncidentThresholdListItem {
+export interface ThresholdIncidentListItem {
   date: Date;
   lastValue: number;
   isExceedingLimit: boolean;

@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, Notification } from 'electron';
 import { AverageListItem } from './interfaces/info';
 import os from 'os';
+import isDev from 'electron-is-dev';
 
 require('loadavg-windows');
 
@@ -11,21 +12,24 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+let mainWindow: BrowserWindow;
+
 const createWindow = () => {
   // Create the browser window.
-  let mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     height: 600,
     width: 800,
     webPreferences: {
       nodeIntegration: true
     }
   });
-
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
-  // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  if (isDev) {
+    // Open the DevTools.
+    mainWindow.webContents.openDevTools();
+  }
 
   mainWindow.on('closed', () => {
     mainWindow = null;
@@ -41,9 +45,9 @@ app.on('ready', createWindow);
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  // if (process.platform !== 'darwin') {
+  app.quit();
+  // }
 });
 
 app.on('activate', () => {
@@ -60,7 +64,11 @@ let currentStatus: boolean;
 
 const data: AverageListItem[] = [];
 ipcMain.on('getCpuInfo', (event) => {
-  setInterval(() => {
+  const interval = setInterval(() => {
+    if (!mainWindow || mainWindow.isDestroyed()) {
+      clearInterval(interval);
+      return;
+    }
     const cpus = os.cpus().length;
     let loadAverage = os.loadavg()[0] / cpus;
     loadAverage = Math.round(loadAverage * 100) / 100;
@@ -69,12 +77,20 @@ ipcMain.on('getCpuInfo', (event) => {
       value: loadAverage,
     };
     data.push(currentLoadAverage);
-    event.sender.send('getCpuInfoResponse', currentLoadAverage);
+    try {
+      event.sender.send('getCpuInfoResponse', currentLoadAverage);
+    }
+    catch (e) {
+      console.log(e);
+    }
     // TODO change to 10sec
   }, 2000);
 });
 
 ipcMain.on('getExceedingLimit', (event) => {
+  if (!mainWindow || mainWindow.isDestroyed()) {
+    return;
+  }
   // TODO MUST IMPROVE
   let j = 0;
   let isExceedingLimit = false;
@@ -86,18 +102,22 @@ ipcMain.on('getExceedingLimit', (event) => {
     }
     j += 1;
   }
-  // todo check if data.length - THRESHOLD_DURATION in the last value
   if (j === THRESHOLD_DURATION - 1 && currentStatus !== isExceedingLimit) {
-    event.sender.send('getExceedingLimitResponse', {
-      isExceedingLimit,
-      lastValue: data[data.length - THRESHOLD_DURATION + 1].value,
-      date: new Date(),
-    });
-    currentStatus = isExceedingLimit;
-    const notification = {
-      title: 'CPU LOAD MONITORING',
-      body: isExceedingLimit ? '🔥' : '👌🏻',
-    };
-    new Notification(notification).show();
+    try {
+      event.sender.send('getExceedingLimitResponse', {
+        isExceedingLimit,
+        lastValue: data[data.length - THRESHOLD_DURATION + 1].value,
+        date: new Date(),
+      });
+      currentStatus = isExceedingLimit;
+      const notification = {
+        title: 'CPU Load Monitoring',
+        body: isExceedingLimit ? '🔥 CPU has reached the average load limit' : '👌🏻  CPU has recovered from high average load limit',
+      };
+      new Notification(notification).show();
+    }
+    catch (e) {
+      console.log(e);
+    }
   }
 });

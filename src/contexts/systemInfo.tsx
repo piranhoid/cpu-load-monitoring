@@ -1,12 +1,12 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
-import { AverageListItem, IncidentThresholdListItem } from '../interfaces/info';
+import { AverageListItem, ThresholdIncidentListItem } from '../interfaces/info';
 
 type SystemInfoContextType = {
   loadAverage: number | undefined;
   averageList: AverageListItem[];
   isExceedingLimit: boolean;
-  tresholdIncidentList: IncidentThresholdListItem[];
+  tresholdIncidentList: ThresholdIncidentListItem[];
 };
 
 type SystemInfoProviderProps = { children: React.ReactNode };
@@ -23,7 +23,7 @@ export const SystemInfoProvider = ({ children }: SystemInfoProviderProps) => {
   const [averageList, setAverageList] = useState<AverageListItem[]>([]);
   const [isExceedingLimit, setIsExceedingLimit] = useState(false);
   const [tresholdIncidentList, setTresholdIncidentList] = useState<
-    IncidentThresholdListItem[]
+    ThresholdIncidentListItem[]
   >([]);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const SystemInfoProvider = ({ children }: SystemInfoProviderProps) => {
       setLoadAverage(arg.value);
       setAverageList((prevState: AverageListItem[]) => {
         let values: AverageListItem[] = [...prevState];
-        if (values.length > 10) {
+        if (values.length === 10) {
           values = values.splice(1);
         }
         values.push(arg);
@@ -40,8 +40,8 @@ export const SystemInfoProvider = ({ children }: SystemInfoProviderProps) => {
     });
     ipcRenderer.on('getExceedingLimitResponse', (_, arg) => {
       setIsExceedingLimit(arg.isExceedingLimit);
-      setTresholdIncidentList((prevState: IncidentThresholdListItem[]) => {
-        const values: IncidentThresholdListItem[] = [...prevState];
+      setTresholdIncidentList((prevState: ThresholdIncidentListItem[]) => {
+        const values: ThresholdIncidentListItem[] = [...prevState];
         values.push({
           lastValue: arg.lastValue,
           date: arg.date,

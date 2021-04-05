@@ -1,8 +1,8 @@
 {
-  "name": "my-new-app",
-  "productName": "my-new-app",
+  "name": "cpu-load-monitoring",
+  "productName": "cpu-load-monitoring",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -13,8 +13,8 @@
   },
   "keywords": [],
   "author": {
-    "name": "Chris Evans",
-    "email": "chris.muttley.evans@gmail.com"
+    "name": "Franck Chevallier",
+    "email": "franck.chev@hotmail.fr"
   },
   "license": "MIT",
   "config": {
@@ -35,7 +35,7 @@
         {
           "name": "@electron-forge/maker-squirrel",
           "config": {
-            "name": "my_new_app"
+            "name": "cpu_load_monitoring"
           }
         },
         {
@@ -106,6 +106,7 @@
   "dependencies": {
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

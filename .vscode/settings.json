@@ -1,6 +1,5 @@
 {
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "typescript.format.enable": true,
   "[jsonc]": {
     "editor.defaultFormatter": "vscode.json-language-features"
   }
