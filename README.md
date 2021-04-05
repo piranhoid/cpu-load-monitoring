@@ -25,4 +25,5 @@ For configuration check .env file
 * Keep history (log file)
 * Optimize threshold incident list (virtual scroll)
 * Add more unit test
+* Optimize production build package size
 * Hire a graphic designer 😬
