@@ -16,10 +16,12 @@ module.exports = {
     "@testing-library/jest-dom/extend-expect"
   ],
 
+  setupFiles: ["dotenv/config"],
+
   // Test spec file resolution pattern
   // Matches parent folder `__tests__` and filename
   // should contain `test` or `spec`.
-  testRegex: "src/.*\\.test\\.tsx$",
+  testRegex: "src/.*\\.test\\.(tsx|ts)$",
 
   // Module file extensions for importing
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"]

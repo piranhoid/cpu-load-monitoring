@@ -2,7 +2,7 @@
   "name": "cpu-load-monitoring",
   "productName": "cpu-load-monitoring",
   "version": "1.0.0",
-  "description": "",
+  "description": "CPU Load Monitoring",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
@@ -116,6 +116,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-test-renderer": "^17.0.1",
+    "dotenv": "^8.2.0",
     "electron-is-dev": "^2.0.0",
     "electron-squirrel-startup": "^1.0.0",
     "react": "^17.0.1",

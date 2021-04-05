@@ -1,9 +1,12 @@
 import { app, BrowserWindow, ipcMain, Notification } from 'electron';
 import { LoadAverageInfo } from './interfaces/info';
-import os from 'os';
 import isDev from 'electron-is-dev';
+import dotenv from 'dotenv';
+import { getCpuLoadAverage, getCpuStatus } from './utils';
 
 require('loadavg-windows');
+
+dotenv.config();
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 
@@ -58,11 +61,6 @@ app.on('activate', () => {
   }
 });
 
-const THRESHOLD_DURATION = 5; // in seconds
-const GET_CPU_INFO_INTERVAL = 5000; // in milliseconds TODO chanage to 10 minutes
-const HIGH_LOAD_AVERAGE_THRESHOLD = 0.7;
-let currentStatus: boolean;
-
 const data: LoadAverageInfo[] = [];
 ipcMain.on('getCpuInfo', (event) => {
   const interval = setInterval(() => {
@@ -70,12 +68,9 @@ ipcMain.on('getCpuInfo', (event) => {
       clearInterval(interval);
       return;
     }
-    const cpus = os.cpus().length;
-    let loadAverage = os.loadavg()[0] / cpus;
-    loadAverage = Math.round(loadAverage * 100) / 100;
     const currentLoadAverage = {
       date: new Date(),
-      value: loadAverage,
+      value: getCpuLoadAverage(),
     };
     data.push(currentLoadAverage);
     try {
@@ -84,34 +79,24 @@ ipcMain.on('getCpuInfo', (event) => {
     catch (e) {
       console.log(e);
     }
-  }, GET_CPU_INFO_INTERVAL);
+  }, +process.env.GET_CPU_INFO_INTERVAL);
 });
 
 ipcMain.on('getExceedingLimit', (event) => {
   if (!mainWindow || mainWindow.isDestroyed()) {
     return;
   }
-  let j = 0;
-  let isExceedingLimit = false;
-  for (let i = data.length - 1; i >= 0 && j < THRESHOLD_DURATION - 1; i -= 1) {
-    if (data[i].value >= HIGH_LOAD_AVERAGE_THRESHOLD) {
-      isExceedingLimit = true;
-    } else {
-      isExceedingLimit = false;
-    }
-    j += 1;
-  }
-  if (j === THRESHOLD_DURATION - 1 && currentStatus !== isExceedingLimit) {
+  const cpuStatus = getCpuStatus(data);
+  if (cpuStatus !== null) {
     try {
       event.sender.send('getExceedingLimitResponse', {
-        isExceedingLimit,
-        lastValue: data[data.length - THRESHOLD_DURATION + 1].value,
+        isExceedingLimit: cpuStatus,
+        lastValue: data[data.length - +process.env.THRESHOLD_DURATION + 1].value,
         date: new Date(),
       });
-      currentStatus = isExceedingLimit;
       const notification = {
         title: 'CPU Load Monitoring',
-        body: isExceedingLimit ? '🔥 CPU has reached the average load limit' : '👌🏻  CPU has recovered from high average load limit',
+        body: cpuStatus ? '🔥 CPU has reached the average load limit' : '👌🏻  CPU has recovered from high average load limit',
       };
       new Notification(notification).show();
     }

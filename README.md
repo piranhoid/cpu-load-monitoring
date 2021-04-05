@@ -11,6 +11,12 @@ to install required dependancies and;
 
 to start the electron development server.
 
+`yarn test`
+
+to start jest.
+
+For configuration check .env file
+
 ------
 ### List of improvements 
 
