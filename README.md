@@ -26,4 +26,5 @@ For configuration check .env file
 * Optimize threshold incident list (virtual scroll)
 * Add more unit test
 * Optimize production build package size
-* Hire a graphic designer 😬
+* Move configuration from .env to the web app, to allow user to modify (env file should not be in repo)
+* Hire a graphic designer 😬 (app beautifier and add a nice icon)
