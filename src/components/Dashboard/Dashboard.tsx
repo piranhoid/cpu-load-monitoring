@@ -11,7 +11,7 @@ const Dashboard = () => {
   } = useSystemInfo();
 
   return (
-    <div className="w-full h-full flex flex-col px-12 py-24">
+    <div className="w-full h-full flex flex-col px-12 py-12">
       <div className="flex-1 flex flex-row justify-center">
         <div className="text-4xl text-center flex items-center justify-center">
           <div>
@@ -27,7 +27,7 @@ const Dashboard = () => {
           <Chart />
         </div>
       </div>
-      <div className="flex-1 mt-12 border-4">
+      <div className="flex-1 mt-12 border-2 overflow-scroll">
         <ThresholdIncidentList />
       </div>
     </div>

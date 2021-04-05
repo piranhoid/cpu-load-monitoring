@@ -4,7 +4,7 @@ export interface LoadAverageInfo {
 }
 
 export interface AverageListItem {
-  index: number;
+  index: string;
   value: number;
 }
 

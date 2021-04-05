@@ -1,0 +1,91 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`[components] ThresholdIncidentList should render correctly 1`] = `
+<table
+  className="table-auto w-full"
+>
+  <thead>
+    <tr>
+      <th>
+        Status
+      </th>
+      <th>
+        Last Value
+      </th>
+      <th>
+        Date
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td
+        className="text-center"
+      >
+        🔥
+      </td>
+      <td
+        className="text-center"
+      >
+        5
+      </td>
+      <td
+        className="text-center"
+      >
+        1/10/2000, 12:00:00 AM
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="text-center"
+      >
+        🔥
+      </td>
+      <td
+        className="text-center"
+      >
+        5
+      </td>
+      <td
+        className="text-center"
+      >
+        1/10/2000, 12:00:00 AM
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="text-center"
+      >
+        🔥
+      </td>
+      <td
+        className="text-center"
+      >
+        5
+      </td>
+      <td
+        className="text-center"
+      >
+        1/10/2000, 12:00:00 AM
+      </td>
+    </tr>
+    <tr>
+      <td
+        className="text-center"
+      >
+        👌🏻
+      </td>
+      <td
+        className="text-center"
+      >
+        5
+      </td>
+      <td
+        className="text-center"
+      >
+        1/10/2000, 12:00:00 AM
+      </td>
+    </tr>
+  </tbody>
+</table>
+`;

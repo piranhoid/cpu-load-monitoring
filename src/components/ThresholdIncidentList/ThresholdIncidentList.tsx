@@ -33,7 +33,7 @@ const ThresholdIncidentList = () => {
                 {thresholdIncident.lastValue}
               </td>
               <td className="text-center">
-                {thresholdIncident.date.toLocaleString()}
+                {thresholdIncident.date.toLocaleString('en-US')}
               </td>
             </tr>
           );

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { ipcRenderer } from 'electron';
-import { AverageListItem, ThresholdIncidentListItem } from '../interfaces/info';
+import { AverageListItem, LoadAverageInfo, ThresholdIncidentListItem } from '../interfaces/info';
 
 type SystemInfoContextType = {
   loadAverage: number | undefined;
@@ -11,7 +11,7 @@ type SystemInfoContextType = {
 
 type SystemInfoProviderProps = { children: React.ReactNode };
 
-const SystemInfoContext = createContext<SystemInfoContextType>({
+export const SystemInfoContext = createContext<Partial<SystemInfoContextType>>({
   loadAverage: undefined,
   averageList: [],
   isExceedingLimit: false,
@@ -27,14 +27,17 @@ export const SystemInfoProvider = ({ children }: SystemInfoProviderProps) => {
   >([]);
 
   useEffect(() => {
-    ipcRenderer.on('getCpuInfoResponse', (_, arg) => {
+    ipcRenderer.on('getCpuInfoResponse', (_, arg: LoadAverageInfo) => {
       setLoadAverage(arg.value);
       setAverageList((prevState: AverageListItem[]) => {
         let values: AverageListItem[] = [...prevState];
         if (values.length === 10) {
           values = values.splice(1);
         }
-        values.push(arg);
+        values.push({
+          index: arg.date.toLocaleString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+          value: arg.value
+        });
         return values;
       });
     });

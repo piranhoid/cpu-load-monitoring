@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, Notification } from 'electron';
-import { AverageListItem } from './interfaces/info';
+import { LoadAverageInfo } from './interfaces/info';
 import os from 'os';
 import isDev from 'electron-is-dev';
 
@@ -17,8 +17,8 @@ let mainWindow: BrowserWindow;
 const createWindow = () => {
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    height: 600,
-    width: 800,
+    width: 1280,
+    height: 720,
     webPreferences: {
       nodeIntegration: true
     }
@@ -59,10 +59,11 @@ app.on('activate', () => {
 });
 
 const THRESHOLD_DURATION = 5; // in seconds
+const GET_CPU_INFO_INTERVAL = 5000; // in milliseconds TODO chanage to 10 minutes
 const HIGH_LOAD_AVERAGE_THRESHOLD = 0.7;
 let currentStatus: boolean;
 
-const data: AverageListItem[] = [];
+const data: LoadAverageInfo[] = [];
 ipcMain.on('getCpuInfo', (event) => {
   const interval = setInterval(() => {
     if (!mainWindow || mainWindow.isDestroyed()) {
@@ -73,7 +74,7 @@ ipcMain.on('getCpuInfo', (event) => {
     let loadAverage = os.loadavg()[0] / cpus;
     loadAverage = Math.round(loadAverage * 100) / 100;
     const currentLoadAverage = {
-      index: new Date().getSeconds(),
+      date: new Date(),
       value: loadAverage,
     };
     data.push(currentLoadAverage);
@@ -83,15 +84,13 @@ ipcMain.on('getCpuInfo', (event) => {
     catch (e) {
       console.log(e);
     }
-    // TODO change to 10sec
-  }, 2000);
+  }, GET_CPU_INFO_INTERVAL);
 });
 
 ipcMain.on('getExceedingLimit', (event) => {
   if (!mainWindow || mainWindow.isDestroyed()) {
     return;
   }
-  // TODO MUST IMPROVE
   let j = 0;
   let isExceedingLimit = false;
   for (let i = data.length - 1; i >= 0 && j < THRESHOLD_DURATION - 1; i -= 1) {
