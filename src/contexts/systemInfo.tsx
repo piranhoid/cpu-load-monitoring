@@ -31,7 +31,7 @@ export const SystemInfoProvider = ({ children }: SystemInfoProviderProps) => {
       setLoadAverage(arg.value);
       setAverageList((prevState: AverageListItem[]) => {
         let values: AverageListItem[] = [...prevState];
-        if (values.length === 10) {
+        if (values.length === 60) {
           values = values.splice(1);
         }
         values.push({

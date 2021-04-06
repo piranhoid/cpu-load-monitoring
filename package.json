@@ -1,7 +1,7 @@
 {
   "name": "cpu-load-monitoring",
   "productName": "cpu-load-monitoring",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "CPU Load Monitoring",
   "main": ".webpack/main",
   "scripts": {
